@@ -61,10 +61,18 @@ class fineAlignSettings(wx.Dialog):
             self.cbList.append(cb)
             fgsWidgetList.append((cb))
 
-        stWavelength = wx.StaticText(self, label='Wavelength (nm)')
+        stWavelength = wx.StaticText(self, label='Wavelengths (nm); format: xx xx')
         fgsWidgetList.append((stWavelength,0))
         self.tcWavelength = wx.TextCtrl(self)
-        self.tcWavelength.SetValue(str(self.fineAlign.wavelength*1e9))
+
+        fineAlign_wavelength_new = []
+        for a in self.fineAlign.wavelength:
+            b = a*1e9
+            fineAlign_wavelength_new.append(b)
+        b = map(str, fineAlign_wavelength_new)
+        c = ' '.join(b)
+        self.tcWavelength.SetValue(c)
+
         fgsWidgetList.append((self.tcWavelength,0))
         
         stSlot = wx.StaticText(self, label='Laser slot')
@@ -136,7 +144,16 @@ class fineAlignSettings(wx.Dialog):
         self.fineAlign.laserSlot = self.laserSlotCb.GetValue()
         self.fineAlign.laserPower = float(self.tcPower.GetValue())
         self.fineAlign.detectorPriority = detPriority
-        self.fineAlign.wavelength = float(self.tcWavelength.GetValue())/1e9
+        wavelengths_str = self.tcWavelength.GetValue()
+        wavelengths_list_str = wavelengths_str.split(' ')
+        wavelengths_list_float = list(map(float, wavelengths_list_str))
+        wavelengths_list_float_new = []
+        for a in wavelengths_list_float:
+            b = a/1e9
+            wavelengths_list_float_new.append(b)
+        self.fineAlign.wavelength = wavelengths_list_float_new
+        # self.fineAlign.wavelength = wavelengths_list_float_new / 1e9
+        # self.fineAlign.wavelength = float(self.tcWavelength.GetValue())/1e9
         self.fineAlign.laserOutput = self.laserOutputMap[self.laserOutputCb.GetValue()]
         self.fineAlign.stepSize = float(self.tcStep.GetValue())
         self.fineAlign.threshold = float(self.tcThresh.GetValue())

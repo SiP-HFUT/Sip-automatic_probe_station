@@ -4,7 +4,7 @@
 
 该软件可实现上百个硅光器件的自动无源光谱测试。这大大的节省了测试的时间。
 
-源代码位于本仓库的[pyOptomip_modifed](https://github.com/SiP-HFUT/Sip-automatic_probe_station/tree/main/pyOptomip_modifed)文件夹之中。由郑焱烽（1335959606@qq.com）和冯佳旺（dingchunfjw@163.com ）完成。一些用户手册包含在本目录下的pyOptomip_modifed_manuals文件夹中。
+源代码位于本仓库的pyOptomip_modifed文件夹之中。由郑焱烽（1335959606@qq.com）和冯佳旺（dingchunfjw@163.com ）完成。一些用户手册包含在本目录下的pyOptomip_modifed_manuals文件夹中。
 
 **基本实现思路：**
 

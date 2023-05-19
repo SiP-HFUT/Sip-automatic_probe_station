@@ -143,7 +143,9 @@ class CorvusEcoClass:
 
     def moveAbsoluteXY(self, x, y):#绝对位置移动
         self.ser.write('AXI1:GOABS %d' % x)
+        self.waitMoveComplete()
         self.ser.write('AXI2:GOABS %d' % y)
+        self.waitMoveComplete()
 
     def waitMoveComplete(self):
         while int(self.ser.query('MOTION?')) & 1:#读取步进电机的状态,1为正在移动，0为停止

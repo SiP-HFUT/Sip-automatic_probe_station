@@ -31,6 +31,7 @@ from dummyLaserParameters import dummyLaserParameters
 from outputlogPanel import outputlogPanel
 from logWriter import logWriter,logWriterError
 from DS102Parameters import DS102Parameters
+from e3000Parameters import e3000Parameters
 import sys
 # import visa
 import pyvisa as visa
@@ -39,7 +40,7 @@ softwareVersion = "1.1"
 
 devTypes = [CorvusEcoParameters, MGMotorParameters, \
             hp816x_N77Det_instrParameters, hp816x_instrParameters, \
-            dummyLaserParameters,DS102Parameters]
+            dummyLaserParameters, DS102Parameters, e3000Parameters]
       
 class ConnectCB(wx.Choicebook):
     def __init__(self, parent, id, connectPanel):

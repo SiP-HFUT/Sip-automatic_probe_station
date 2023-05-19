@@ -26,9 +26,9 @@ import numpy as np
 import hp816x_instr
 
 class fineAlign(object):
-    #wavelength = np.array([1550e-9,1555e-9]);
-    wavelength = 1550e-9; # Fine align wavelength
-    laserPower = 6; # Laser power for fine align 0->6(23.4.14)
+    # wavelength = np.array([1550e-9,1555e-9]);
+    wavelength = [1550e-9] # Fine align wavelength
+    laserPower = 6 # Laser power for fine align 0->6(23.4.14)
     laserOutput = 'highpower' # Which laser output to use
     laserSlot = 'auto' # Which laser slot to use. Default to first found laser
     
@@ -46,7 +46,7 @@ class fineAlign(object):
     
     useCrosshair = 0 # Set to 1 to use crosshair search after gradient. Doesn't work very well.
 
-    useDebugStep = 0 #set to 1 to turn on tracking of power and steps
+    useDebugStep = 1 #set to 1 to turn on tracking of power and steps
     
     useFineGradient = False; #Secondary Gradient Search
     
@@ -65,8 +65,8 @@ class fineAlign(object):
         self.stage = stage
     
     def doFineAlign(self):
-        xStartPos = self.stage.getPosition()[0];
-        yStartPos = self.stage.getPosition()[1];
+        xStartPos = self.stage.getPosition()[0]
+        yStartPos = self.stage.getPosition()[1]
         
         ##Debug##
         if self.useDebugStep == 1:
@@ -76,7 +76,9 @@ class fineAlign(object):
             if self.useFineGradient == True:
                 self.logfileFGrad = open('Logfile_FGrad'+str(self.stepSize)+'um.txt','w+')
         #/Debug#
-                
+        # for wavelength in self.wavelength:
+        #     self.laser.setTLSWavelength(self.wavelength,slot=self.laserSlot)
+
         for det in self.detectorPriority:
             maxSteps = math.ceil(self.scanWindowSize/float(self.stepSize))
             # Get the detector slot number and channel for the chosen detector index
@@ -99,54 +101,53 @@ class fineAlign(object):
             except hp816x_instr.InstrumentError:
                 pass
 
-            #wavelength = self.wavelength[det]
-          #  for wavelength in self.wavelength:
 
-                self.laser.setTLSWavelength(self.wavelength, slot=self.laserSlot)
-                self.laser.setTLSPower(self.laserPower, slot=self.laserSlot)
-                self.laser.setTLSState('on', slot=self.laserSlot)
-                  
-            
-            # Spiral search method
-            res =  self.spiralSearch(maxSteps, detSlot, detChan)#error before this line
-            if res == self.DEVICE_NOT_FOUND:
-                xStopPos = self.stage.getPosition()[0];
-                yStopPos = self.stage.getPosition()[1];
-                self.stage.moveRelative(xStartPos-xStopPos, yStartPos-yStopPos)
-                print ('Could not find a device using this detector.')
-                continue
-            elif res == self.FINE_ALIGN_ABORTED:
-                print ('Fine align self.aborted.')
-                break
-            print ('Found a device. Optimizing power...')   
-            
-            # Gradient search stage      
-            res = self.gradientSearchRough(detSlot, detChan)
-            
-            if self.useFineGradient == True:
-                res = self.gradientSearchFine(detSlot, detChan)
-              
-            # Crosshair method
-            if self.useCrosshair:
-                res = self.crosshairSearch(maxSteps, detSlot, detChan)
-            self.laser.setAutorangeAll()
-            print ('Fine align completed.')
-            #Debug#
-            if self.useDebugStep ==1:
-                self.logfileSpiral.close() 
-                self.logfileRGrad.close()
+            self.laser.setTLSPower(self.laserPower, slot=self.laserSlot)
+            self.laser.setTLSState('on', slot=self.laserSlot)
+
+            for wavelength1 in self.wavelength:
+                self.laser.setTLSWavelength(wavelength1, slot=self.laserSlot)
+                # Spiral search method
+                res =  self.spiralSearch(maxSteps, detSlot, detChan)#error before this line
+                if res == self.DEVICE_NOT_FOUND:
+                    xStopPos = self.stage.getPosition()[0];
+                    yStopPos = self.stage.getPosition()[1];
+                    self.stage.moveRelative(xStopPos-xStartPos, yStartPos-yStopPos)
+                    print ('Could not find a device using this detector at wavelength: ' + str(wavelength1*1e9) + ' nm')
+                    # print('current location:' + str(self.stage.getPosition()[0]) + ', ' + str(self.stage.getPosition()[1]))
+                    continue
+                elif res == self.FINE_ALIGN_ABORTED:
+                    print ('Fine align self.aborted.')
+                    break
+                print ('Found a device at wavelength: ' + str(wavelength1*1e9) + ' nm; Optimizing power...')
+
+                # Gradient search stage
+                res = self.gradientSearchRough(detSlot, detChan)
+
                 if self.useFineGradient == True:
-                    self.logfileFGrad.close()
-            #/Debug#
-            return res
-            
-        # Fine align failed  
+                    res = self.gradientSearchFine(detSlot, detChan)
+
+                # Crosshair method
+                if self.useCrosshair:
+                    res = self.crosshairSearch(maxSteps, detSlot, detChan)
+                self.laser.setAutorangeAll()
+                print ('Fine align completed.')
+                #Debug#
+                if self.useDebugStep ==1:
+                    self.logfileSpiral.close()
+                    self.logfileRGrad.close()
+                    if self.useFineGradient == True:
+                        self.logfileFGrad.close()
+                #/Debug#
+                return res
+
+        # Fine align failed
         print ('Fine align failed.')
         xStopPos = self.stage.getPosition()[0];
         yStopPos = self.stage.getPosition()[1];
-        self.stage.moveRelative(xStartPos-xStopPos, yStartPos-yStopPos)
+        self.stage.moveRelative(xStopPos- xStartPos, yStartPos-yStopPos)
         self.laser.setAutorangeAll()
-        return res    
+        return res
             
     def spiralSearch(self, maxSteps, detSlot, detChan):
         numSteps = 1
