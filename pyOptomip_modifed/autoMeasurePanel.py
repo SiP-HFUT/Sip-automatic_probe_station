@@ -172,7 +172,7 @@ class autoMeasurePanel(wx.Panel):
         hbox2.AddMany([(self.checkAllBtn, 0, wx.EXPAND), (self.uncheckAllBtn, 0, wx.EXPAND)])
         ##
         self.checkList = CheckListCtrl(self)
-        self.checkList.InsertColumn(0, 'Device', width=100)
+        self.checkList.InsertColumn(0, 'Device', width=150)
         hbox3 = wx.BoxSizer(wx.HORIZONTAL)
         hbox3.Add(self.checkList, proportion=1, flag=wx.EXPAND)
         ##
