@@ -52,7 +52,7 @@ class hp816x(object):
     sweepStepWvl = 1e-9;
     sweepSpeed = '10nm';
     sweepUnit = 'dBm'
-    sweepPower = 0; #change 0 to 6 in 5.16?
+    sweepPower = 6; #change 0 to 6 in 5.16?
     sweepLaserOutput = 'lowsse';
     sweepNumScans = 3;
     sweepPWMChannel = 'all';
