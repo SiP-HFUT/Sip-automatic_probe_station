@@ -90,7 +90,7 @@ class instrumentFrame(wx.Frame):
             motorVbox.Add(self.autoMeasurePanel, proportion=0, flag=wx.EXPAND)
 
         if self.motorFound():
-            hbox.Add(motorVbox)
+            hbox.Add(motorVbox,proportion=1)#增加了proportion=1，使其可以随着GUI窗口的变化而变化
             # hbox.Add(SMUVbox)
             #vbox.Add(motorVbox, 3, wx.EXPAND)
 
