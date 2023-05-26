@@ -33,3 +33,12 @@
 
 <img src="md_files/work_flow.jpg" style="zoom:20%;" />
 
+
+
+一些没有反应在commit下的改动：
+
+- fineAlign.py 中的 `doFineAlign` 方法：fine align失败后返回原位的语句：`self.stage.moveRelative(xStartPos - xStopPos, yStartPos-yStopPos)` 修正为了 `self.stage.moveRelative(xStopPos-xStartPos, yStartPos-yStopPos)`；原因：可能跟我们使用的DS102位移台于原代码所使用位移台的区别有关，这里需要将x方向移动的正负修正一下，才能回到原位置。
+- 禁止了 fine align中的 useFineGradient功能，即`useFineGradient = False`。因为我们发现其位移的步长太小，无法被DS102支持，导致错误的位移。
+- 增加了多波长的fine align功能
+- 位移台函数中，`moveAbsoluteXY` 方法，将移动x和移动y都分别设置了等待，`self.waitMoveComplete()`；否则，Automeasure.py 的 `beginMeasure`中，`self.motor.moveAbsoluteXY`位移台唯一通常需要较长时间（位移距离较远），而下一行的`self.fineAlign.doFineAlign()`可能不等待位移结束就开始执行，导致`doFineAlign`中的前两行，获取错误的起始位置即错误的`xStartPos`和`yStartPos`，导致若fine align失败，位移台将无法回到正确的初始位置。
+- Comment掉了 UltraFineAlign的功能，因为我们发现使用N7745功率计时，无法用 setPWMAveragingTime （即hp816x驱动中的hp816x_set_PWM_averagingTime）的功能。

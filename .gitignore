@@ -1,0 +1,31 @@
+
+#This file is created by: touch.gitignore 
+#put it in the root folder
+#ignore slprj folder
+*/slprj/
+/slprj/
+
+#ignore following files;
+*asv
+*slxc
+*mexmaci64
+*mexmaci32
+*mexw32
+*mexw64
+
+*.ps
+*.vsdx
+
+# Word temporary
+~$*.doc*
+
+# PowerPoint temporary
+~$*.ppt*
+
+# Visio autosave temporary files
+*.~vsdx
+
+# Interconnect autosave temporary files
+*.ich
+
+debug?.m
