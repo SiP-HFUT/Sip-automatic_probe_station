@@ -66,41 +66,41 @@ class myToolbar(NavigationToolbar):
                     error_msg_wx(str(e))   
 
     # Added feature where double clicking on the graph zooms out to show all the data                    
-    def press_zoom(self, event):
-        """the press mouse button in zoom to rect mode callback"""
-        if event.dblclick:
-            self.home()
-            return
-        elif event.button == 1:
-            self._button_pressed=1
-        elif  event.button == 3:
-            self._button_pressed=3
-        else:
-            self._button_pressed=None
-            return
+    # def press_zoom(self, event):
+    #     """the press mouse button in zoom to rect mode callback"""
+    #     if event.dblclick:
+    #         self.home()
+    #         return
+    #     elif event.button == 1:
+    #         self._button_pressed=1
+    #     elif  event.button == 3:
+    #         self._button_pressed=3
+    #     else:
+    #         self._button_pressed=None
+    #         return
 
-        x, y = event.x, event.y
+    #     x, y = event.x, event.y
 
-        # push the current view to define home if stack is empty
-        if self._views.empty(): self.push_current()
+    #     # push the current view to define home if stack is empty
+    #     if self._views.empty(): self.push_current()
 
-        self._xypress=[]
-        for i, a in enumerate(self.canvas.figure.get_axes()):
-            if (x is not None and y is not None and a.in_axes(event) and
-                a.get_navigate() and a.can_zoom()) :
-                self._xypress.append(( x, y, a, i, a.viewLim.frozen(),
-                                       a.transData.frozen() ))
+    #     self._xypress=[]
+    #     for i, a in enumerate(self.canvas.figure.get_axes()):
+    #         if (x is not None and y is not None and a.in_axes(event) and
+    #             a.get_navigate() and a.can_zoom()) :
+    #             self._xypress.append(( x, y, a, i, a.viewLim.frozen(),
+    #                                    a.transData.frozen() ))
 
-        id1 = self.canvas.mpl_connect('motion_notify_event', self.drag_zoom)
-        id2 = self.canvas.mpl_connect('key_press_event',
-                                      self._switch_on_zoom_mode)
-        id3 = self.canvas.mpl_connect('key_release_event',
-                                      self._switch_off_zoom_mode)
+    #     id1 = self.canvas.mpl_connect('motion_notify_event', self.drag_zoom)
+    #     id2 = self.canvas.mpl_connect('key_press_event',
+    #                                   self._switch_on_zoom_mode)
+    #     id3 = self.canvas.mpl_connect('key_release_event',
+    #                                   self._switch_off_zoom_mode)
 
-        self._ids_zoom = id1, id2, id3
-        self._zoom_mode = event.key
+    #     self._ids_zoom = id1, id2, id3
+    #     self._zoom_mode = event.key
 
-        self.press(event)                
+    #     self.press(event)                
     
 class myMatplotlibPanel(wx.Panel):
     def __init__(self,parent):
