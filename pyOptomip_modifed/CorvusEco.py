@@ -44,7 +44,7 @@ class CorvusEcoClass:
 
     def connect(self, visaName, rm, Velocity, Acceleration, NumberOfAxis):  # self,visaName,rm,速度,加速度,NumberOfAxis
          self.visaName = visaName
-         self.ser = rm.open_resource('ASRL6::INSTR')#'ASRL3::INSTR'-->visaName
+         self.ser = rm.open_resource('ASRL3::INSTR')#'ASRL3::INSTR'-->visaName
          self.ser.baud_rate = 9600
          self.ser.read_termination = '\r'
          self.ser.write_termination = '\r'
